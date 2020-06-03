@@ -55,8 +55,11 @@ class Normalize:
         return transformed
 
     def _compute_params(self, data_max, data_min):
-        factor = 2 / (data_max - data_min)
-        shift = 2 * data_min / (data_max - data_min) + 1
+        data_range = data_max - data_min
+        if data_range == 0:
+            return 1, 0
+        factor = 2 / data_range
+        shift = 2 * data_min / data_range + 1
         return factor, shift
 
     def get_desc(self):

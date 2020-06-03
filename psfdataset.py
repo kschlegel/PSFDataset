@@ -104,11 +104,6 @@ class PSFDataset:
         data_iterator: iterable
             Iterable returning keypoint,label pairs of data.
         """
-        it = iter(data_iterator)
-        if len(next(it)) != 2:
-            raise Exception(
-                "Iterator is expected to return a keypoints,label pair!")
-
         for element in tqdm(data_iterator):
             self.add_element(element[0], element[1])
 
