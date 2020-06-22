@@ -10,8 +10,8 @@ import os
 import json
 import pytest
 
-from ..psfdataset import PSFDataset
-from ..transforms.spatial import Normalize
+from psfdataset import PSFDataset
+from psfdataset.transforms.spatial import Normalize
 
 
 class TestPSFDataset:

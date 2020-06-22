@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.spatial.crop import Crop
+from psfdataset.transforms.spatial.crop import Crop
 
 
 class TestCrop:

@@ -20,8 +20,10 @@ class TimeIncorporatedTransformation:
         (2,0),(8,1),(4,2)
     """
     def __call__(self, sample):
-        time_dimension = np.array([[[j] for j in range(len(sample[i]))]
-                                   for i in range(len(sample))])
+        time_dimension = np.array([[[j / (len(sample[i]) - 1)]
+                                    for j in range(len(sample[i]))]
+                                   for i in range(len(sample))],
+                                  dtype=np.float64)
         return np.concatenate((sample, time_dimension), axis=2)
 
     def get_desc(self):

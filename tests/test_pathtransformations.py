@@ -7,18 +7,17 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.temporal import TimeIncorporatedTransformation
-from ..transforms.temporal import InvisibilityResetTransformation
+from psfdataset.transforms.temporal import TimeIncorporatedTransformation
+from psfdataset.transforms.temporal import InvisibilityResetTransformation
 
 
 class TestPathTransformations:
     def test_TimeIncorporatedTransform(self):
         test_input = np.array([[[2], [4], [8]]])
         ti = TimeIncorporatedTransformation()
-        expected = np.array([[[2, 0], [4, 1], [8, 2]]])
+        expected = np.array([[[2, 0], [4, 0.5], [8, 1]]])
         output = ti(test_input)
-        np.testing.assert_array_equal(output, expected)
-        assert output.dtype == test_input.dtype
+        np.testing.assert_allclose(output, expected)
 
     def test_InvisibilityResetTransform(self):
         test_input = np.array([[[1], [2], [3]]])

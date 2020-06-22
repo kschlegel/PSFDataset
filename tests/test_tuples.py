@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.spatial import Tuples
+from psfdataset.transforms.spatial import Tuples
 
 
 class TestTuples:

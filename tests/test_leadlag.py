@@ -7,8 +7,8 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.temporal import LeadLagTransformation
-from ..transforms.temporal import MultiDelayedTransformation
+from psfdataset.transforms.temporal import LeadLagTransformation
+from psfdataset.transforms.temporal import MultiDelayedTransformation
 
 
 class TestLeadLag:

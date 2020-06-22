@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms import SpatioTemporalPath
+from psfdataset.transforms import SpatioTemporalPath
 
 
 class TestSpatioTemporalPath:

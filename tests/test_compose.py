@@ -7,8 +7,8 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms import Compose
-from ..transforms.spatial import Crop, Normalize
+from psfdataset.transforms import Compose
+from psfdataset.transforms.spatial import Crop, Normalize
 
 
 class TestCompose:

@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.temporal import DyadicPathSignatures
+from psfdataset.transforms.temporal import DyadicPathSignatures
 
 
 class TestDyadicSignature:

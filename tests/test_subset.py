@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.spatial import RandomSubset, FirstN, SubSample
+from psfdataset.transforms.spatial import RandomSubset, FirstN, SubSample
 
 
 class TestSubset:

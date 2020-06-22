@@ -123,6 +123,7 @@ ds = ds.shuffle(buffer_size=100).batch(8)
 
 #### TensorBoard
 The dictionary returned by get_desc() can be passed into the hparam tracking of TensorBoard for comparing the effect of different dataset configurations on your model performance.
+
 TensorFlow example:
 ```python
 hparam_callback = hp.KerasCallback(logdir, ds.get_desc())

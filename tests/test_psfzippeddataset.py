@@ -8,9 +8,9 @@
 import numpy as np
 import pytest
 
-from .. import PSFDataset
-from .. import PSFZippedDataset
-from ..transforms.spatial import Normalize, Crop
+from psfdataset import PSFDataset
+from psfdataset import PSFZippedDataset
+from psfdataset.transforms.spatial import Normalize, Crop
 
 
 class TestPSFZippedDataset:

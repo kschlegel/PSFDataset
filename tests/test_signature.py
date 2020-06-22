@@ -7,7 +7,7 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.spatial import Signature
+from psfdataset.transforms.spatial import Signature
 
 
 class TestSignature:

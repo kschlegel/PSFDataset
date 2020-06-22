@@ -7,9 +7,9 @@
 # -----------------------------------------------------------
 import numpy as np
 
-from ..transforms.spatial import Normalize
-from ..transforms.spatial import NormalizeWithConfidence
-from ..transforms.spatial import NormalizeWithoutConfidence
+from psfdataset.transforms.spatial import Normalize
+from psfdataset.transforms.spatial import NormalizeWithConfidence
+from psfdataset.transforms.spatial import NormalizeWithoutConfidence
 
 
 class TestNormalize:
