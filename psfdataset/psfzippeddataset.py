@@ -31,7 +31,7 @@ class PSFZippedDataset():
         Return a dictionary describing the properties of the dataset.
 
     """
-    def __init__(self, datasets):
+    def __init__(self, datasets, flattened=True):
         """
         Parameters
         ----------
@@ -41,6 +41,7 @@ class PSFZippedDataset():
         if not isinstance(datasets, (list, tuple)) or len(datasets) < 2:
             raise Exception("Zipping datasets requires at least 2 datasets!")
         self._datasets = datasets
+        self._flattened = flattened
 
     def __getitem__(self, index):
         """ Returns the flattened feature vector and its label. """
@@ -49,7 +50,10 @@ class PSFZippedDataset():
         for dataset in self._datasets:
             keypoints, label = dataset[index]
             keypoint_arr.append(keypoints)
-        return (np.concatenate(keypoint_arr), label)
+        if self._flattened:
+            return (np.concatenate(keypoint_arr), label)
+        else:
+            return (tuple(keypoint_arr), label)
 
     def __len__(self):
         return min([len(d) for d in self._datasets])
@@ -71,7 +75,10 @@ class PSFZippedDataset():
         int
             The size of the feature vector
         """
-        return np.sum([d.get_data_dimension() for d in self._datasets])
+        if self._flattened:
+            return np.sum([d.get_data_dimension() for d in self._datasets])
+        else:
+            return tuple([d.get_data_dimension() for d in self._datasets])
 
     def get_labels(self):
         """

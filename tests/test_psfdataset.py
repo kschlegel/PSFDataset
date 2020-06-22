@@ -8,7 +8,6 @@
 import numpy as np
 import os
 import json
-import pytest
 
 from psfdataset import PSFDataset
 from psfdataset.transforms.spatial import Normalize
@@ -35,9 +34,6 @@ class TestPSFDataset:
 
         assert ds.get_data_dimension() == 2
         assert isinstance(ds.get_desc(), dict)
-        # Test I can't add data of different shape
-        with pytest.raises(Exception):
-            ds.add_element(np.array([3, 4, 5]), 1)
 
         def it():
             for i in range(2):

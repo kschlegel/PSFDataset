@@ -48,7 +48,7 @@ class PSFDataset:
     load(filename)
         Load the dataset.
     """
-    def __init__(self, transform=None):
+    def __init__(self, transform=None, flattened=True, dtype=np.float64):
         """
         Parameters
         ----------
@@ -63,6 +63,8 @@ class PSFDataset:
         # _transform is a callable sequence of transformations to be applied to
         # every data element when added
         self._transform = transform
+        self._flattened = flattened
+        self._dtype = dtype
         # optionally the dataset can hold a training/testset split
         # using the PSFDataSubset module
         self._trainingset = None
@@ -88,7 +90,10 @@ class PSFDataset:
 
     def __getitem__(self, index):
         """ Returns the flattened feature vector and its label. """
-        return (self._data[index].reshape(-1), self._labels[index])
+        if self._flattened:
+            return (self._data[index].reshape(-1), self._labels[index])
+        else:
+            return (self._data[index], self._labels[index])
 
     def __len__(self):
         return len(self._data)
@@ -110,11 +115,7 @@ class PSFDataset:
         """
         if self._transform is not None:
             keypoints = self._transform(keypoints)
-        # Make sure all data added has the same shape
-        if len(self._data) > 0:
-            if keypoints.shape != self._data[0].shape:
-                raise Exception("All data must have the same shape!")
-        self._data.append(keypoints)
+        self._data.append(keypoints.astype(self._dtype))
         self._labels.append(label)
 
     def set_split(self, desc, train_ids, test_ids):
@@ -171,7 +172,10 @@ class PSFDataset:
             The size of the feature vector
         """
         if len(self._data) > 0:
-            return np.prod(self._data[0].shape)
+            if self._flattened:
+                return np.prod(self._data[0].shape)
+            else:
+                return self._data[0].shape
         else:
             return 0
 
