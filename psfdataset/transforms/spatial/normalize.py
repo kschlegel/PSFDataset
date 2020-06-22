@@ -20,6 +20,7 @@ class Normalize:
 
     Takes an array of the form [frame,landmark,coords] where coords only
     contains spatial coordinates and normalizes all values into [-1,1].
+    Optionally a subset of the coordinates to normalise can be selected.
 
     Methods
     -------

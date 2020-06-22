@@ -39,3 +39,5 @@ from .crop import Crop
 from .subset import RandomSubset, FirstN, SubSample
 from .tuples import Tuples
 from .signature import Signature
+from .flatten import Flatten
+from .flow import Flow
