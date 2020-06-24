@@ -110,6 +110,7 @@ class NormalizeWithoutConfidence(Normalize):
         """
         desc = super().get_desc()
         desc.update({"(s)Normalize": "coords"})
+        return desc
 
 
 class NormalizeWithConfidence(NormalizeWithoutConfidence):
@@ -143,3 +144,4 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
         """
         desc = super().get_desc()
         desc.update({"(s)Normalize": "coords+confidence"})
+        return desc
