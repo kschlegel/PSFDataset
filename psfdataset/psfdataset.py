@@ -9,6 +9,8 @@ import numpy as np
 import json
 from tqdm import tqdm
 
+from .psfdatasubset import PSFDataSubset
+
 
 class PSFDataset:
     """
@@ -29,6 +31,8 @@ class PSFDataset:
     -------
     add_element(keypoints, label)
         Take keypoints and label and add them to the dataset.
+    set_split(desc, train_ids, test_ids)
+        Sets the training/test split for the dataset.
     from_iterator(data_iterator)
         Take iterator for keypoint label pairs and fill dataset.
     get_iterator()
@@ -57,8 +61,30 @@ class PSFDataset:
         # _labels contains the ground truth classification labels
         self._labels = []
         # _transform is a callable sequence of transformations to be applied to
-        # every data elemtn when added
+        # every data element when added
         self._transform = transform
+        # optionally the dataset can hold a training/testset split
+        # using the PSFDataSubset module
+        self._trainingset = None
+        self._testset = None
+        self._split_desc = {}
+
+    # properties to access trainingset and testset subsets of the dataset.
+    # No setters implemented as setting the subsets should only happen through
+    # the set_split method which also sets the description dictionary.
+    @property
+    def trainingset(self):
+        """
+        Access to the training subset of the dataset.
+        """
+        return self._trainingset
+
+    @property
+    def testset(self):
+        """
+        Access to the test subset of the dataset.
+        """
+        return self._testset
 
     def __getitem__(self, index):
         """ Returns the flattened feature vector and its label. """
@@ -90,6 +116,26 @@ class PSFDataset:
                 raise Exception("All data must have the same shape!")
         self._data.append(keypoints)
         self._labels.append(label)
+
+    def set_split(self, desc, train_ids, test_ids):
+        """
+        Sets the training/test split for the dataset.
+
+        The subsets can then be accessed via the trainingset and testset
+        properties.
+
+        Parameters
+        ----------
+        desc : dict
+            Dictionary with all information to identify the split in the logs.
+        train_ids : list of ints
+            List of the ids of elements of the trainingset
+        test_ids : list of ints
+            List of the ids of elements of the testset
+        """
+        self._split_desc = desc
+        self._trainingset = PSFDataSubset(self, train_ids)
+        self._testset = PSFDataSubset(self, test_ids)
 
     def from_iterator(self, data_iterator):
         """
@@ -161,6 +207,7 @@ class PSFDataset:
             desc = self._transform.get_desc()
         else:
             desc = {}
+        desc.update(self._split_desc)
         return desc
 
     def save(self, filename):
