@@ -22,7 +22,7 @@ class Signature:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, signature_level, drop_zeroth_term=True):
@@ -50,7 +50,7 @@ class Signature:
             signatures.append(signatures_frame)
         return np.array(signatures)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

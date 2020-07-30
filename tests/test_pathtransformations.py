@@ -18,6 +18,7 @@ class TestPathTransformations:
         expected = np.array([[[2, 0], [4, 0.5], [8, 1]]])
         output = ti(test_input)
         np.testing.assert_allclose(output, expected)
+        assert isinstance(ti.get_description(), dict)
 
     def test_InvisibilityResetTransform(self):
         test_input = np.array([[[1], [2], [3]]])
@@ -26,3 +27,4 @@ class TestPathTransformations:
         output = ir(test_input)
         np.testing.assert_array_equal(output, expected)
         assert output.dtype == test_input.dtype
+        assert isinstance(ir.get_description(), dict)

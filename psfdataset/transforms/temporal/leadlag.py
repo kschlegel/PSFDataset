@@ -48,7 +48,7 @@ class LeadLagTransformation:
                                         k][k] = sample[i][frame]
         return lead_lag
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -95,7 +95,7 @@ class MultiDelayedTransformation:
                     delayed_path[i][frame + j][j] = sample[i][frame]
         return delayed_path
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

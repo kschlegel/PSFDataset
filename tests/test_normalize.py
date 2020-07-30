@@ -31,6 +31,7 @@ class TestNormalize:
         np.testing.assert_array_equal(output, expected)
         output = normalize(test_input2)
         np.testing.assert_array_equal(output, expected2)
+        assert isinstance(normalize.get_description(), dict)
 
     def test_NormalizeConfidenceScores(self):
         # Test normalizing of arrays containing a confidence score as their
@@ -41,9 +42,11 @@ class TestNormalize:
         expected = np.array([[[-1, 0], [0, 0.5], [1, 1]]])
         output = normalize(test_input)
         np.testing.assert_array_equal(output, expected)
+        assert isinstance(normalize.get_description(), dict)
 
         # Test normalizing everything (confidence needs different scaling)
         normalize = NormalizeWithConfidence(3, 1)
         expected = np.array([[[-1, -1], [0, 0], [1, 1]]])
         output = normalize(test_input)
         np.testing.assert_array_equal(output, expected)
+        assert isinstance(normalize.get_description(), dict)

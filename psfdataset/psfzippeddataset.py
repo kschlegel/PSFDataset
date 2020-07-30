@@ -27,7 +27,7 @@ class PSFZippedDataset():
         Return dimension of feature vector.
     get_labels()
         Return a numpy array of all labels of the dataset.
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the dataset.
 
     """
@@ -37,27 +37,34 @@ class PSFZippedDataset():
         ----------
         datasets : list/tuple of PSFDatasets
             A collection of existing PSFDatasets to be joined into one dataset.
+            Datasets are assumed to come from the same dataset, i.e. have the
+            same length and consistent labels across the collection
         """
         if not isinstance(datasets, (list, tuple)) or len(datasets) < 2:
             raise Exception("Zipping datasets requires at least 2 datasets!")
+        ds_iter = iter(datasets)
+        ds_len = len(next(ds_iter))
+        for ds in ds_iter:
+            if len(ds) != ds_len:
+                raise Exception(
+                    "All datasets in the collection must have equal length.")
         self._datasets = datasets
 
     def __getitem__(self, index):
         """ Returns the flattened feature vector and its label. """
         keypoint_arr = []
-        label = None
         for dataset in self._datasets:
             keypoints, label = dataset[index]
             keypoint_arr.append(keypoints)
         return (np.concatenate(keypoint_arr), label)
 
     def __len__(self):
-        return min([len(d) for d in self._datasets])
+        return len(self._datasets[0])
 
     def get_iterator(self):
         """ Python generator for iterating over the dataset. """
         for i in range(len(self)):
-            yield self[i]
+            yield self[i]  # return self[i] to use __getitem__ implementation
 
     def get_data_dimension(self):
         """
@@ -86,7 +93,7 @@ class PSFZippedDataset():
         """
         return self._datasets[-1].get_labels()
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of all datasets.
 
@@ -105,7 +112,7 @@ class PSFZippedDataset():
         """
         desc = {}
         for i, dataset in enumerate(self._datasets):
-            ds_desc = dataset.get_desc()
+            ds_desc = dataset.get_description()
             for key, val in ds_desc.items():
                 desc["[DS" + str(i + 1) + "]" + key] = val
         return desc

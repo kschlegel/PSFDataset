@@ -34,7 +34,7 @@ class TestPSFDataset:
             i += 1
 
         assert ds.get_data_dimension() == 2
-        assert isinstance(ds.get_desc(), dict)
+        assert isinstance(ds.get_description(), dict)
         # Test I can't add data of different shape
         with pytest.raises(Exception):
             ds.add_element(np.array([3, 4, 5]), 1)
@@ -45,7 +45,7 @@ class TestPSFDataset:
 
         # Test creating from iterator
         ds2 = PSFDataset(None)
-        ds2.from_iterator(it())
+        ds2.fill_from_iterator(it())
         assert len(ds) == 2
         for i in range(2):
             np.testing.assert_array_equal(ds[i][0], np.array([i + 1, i + 2]))
@@ -69,7 +69,7 @@ class TestPSFDataset:
             assert ds[i][1] == ds2[i][1]
         with open("test_ds.json", "r") as settings_file:
             transform_desc = json.load(settings_file)
-        assert transform_desc == transform.get_desc()
+        assert transform_desc == transform.get_description()
         # delete files
         os.remove("test_ds.npz")
         os.remove("test_ds.json")

@@ -19,7 +19,7 @@ class Normalize:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, data_max=None, data_min=0):
@@ -62,7 +62,7 @@ class Normalize:
         shift = 2 * data_min / data_range + 1
         return factor, shift
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -89,7 +89,7 @@ class NormalizeWithoutConfidence(Normalize):
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __call__(self, sample):
@@ -99,7 +99,7 @@ class NormalizeWithoutConfidence(Normalize):
             axis=2)
         return transformed
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -108,7 +108,7 @@ class NormalizeWithoutConfidence(Normalize):
         dict
             Description of the transformation
         """
-        desc = super().get_desc()
+        desc = super().get_description()
         desc.update({"(s)Normalize": "coords"})
         return desc
 
@@ -124,7 +124,7 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __call__(self, sample):
@@ -133,7 +133,7 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
         transformed[:, :, -1] -= 1
         return transformed
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -142,6 +142,6 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
         dict
             Description of the transformation
         """
-        desc = super().get_desc()
+        desc = super().get_description()
         desc.update({"(s)Normalize": "coords+confidence"})
         return desc

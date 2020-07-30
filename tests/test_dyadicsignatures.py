@@ -72,3 +72,5 @@ class TestDyadicSignature:
         expected_stack = expected_stack.reshape((1, ) + expected_stack.shape)
         output = sig(test_input)
         np.testing.assert_allclose(output, expected_stack)
+
+        assert isinstance(sig.get_description(), dict)

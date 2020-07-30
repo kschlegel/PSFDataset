@@ -23,7 +23,7 @@ class Crop:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, ignore_missing=False):
@@ -40,16 +40,16 @@ class Crop:
             for frame in range(sample.shape[0]):
                 for landmark in range(sample.shape[1]):
                     if sample[frame][landmark][-1] != 0:
-                        transformed[frame][landmark][
-                            0:-1] = sample[frame][landmark][0:-1] - mins
-                        transformed[frame][landmark][-1] = sample[frame][
-                            landmark][-1]
+                        transformed[frame][landmark][0:-1] = \
+                            sample[frame][landmark][0:-1] - mins
+                        transformed[frame][landmark][-1] = \
+                            sample[frame][landmark][-1]
         else:
             mins = np.amin(sample, axis=(0, 1))
             transformed = sample - mins
         return transformed
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

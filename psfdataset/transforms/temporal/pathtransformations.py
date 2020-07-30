@@ -26,7 +26,7 @@ class TimeIncorporatedTransformation:
                                   dtype=np.float64)
         return np.concatenate((sample, time_dimension), axis=2)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -66,7 +66,7 @@ class InvisibilityResetTransformation:
         extended[:, -2, -1] = 0
         return extended
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

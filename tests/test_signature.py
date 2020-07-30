@@ -32,3 +32,4 @@ class TestSignature:
         ]]])
         output = sig(test_input)
         np.testing.assert_allclose(output, expected)
+        assert isinstance(sig.get_description(), dict)

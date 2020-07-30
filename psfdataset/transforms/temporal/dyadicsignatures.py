@@ -22,7 +22,7 @@ class DyadicPathSignatures:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, dyadic_levels, signature_level=2, overlapping=False):
@@ -70,7 +70,7 @@ class DyadicPathSignatures:
                     ]
         return np.array(dyadic_pieces)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

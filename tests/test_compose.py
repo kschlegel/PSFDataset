@@ -24,11 +24,12 @@ class TestCompose:
         np.testing.assert_array_equal(output, expected)
 
         # check desc array
-        desc = transform.get_desc()
-        for key, val in crop.get_desc().items():
+        desc = transform.get_description()
+        assert isinstance(desc, dict)
+        for key, val in crop.get_description().items():
             assert key in desc
             assert desc[key] == val
-        for key, val in norm.get_desc().items():
+        for key, val in norm.get_description().items():
             assert key in desc
             assert desc[key] == val
 

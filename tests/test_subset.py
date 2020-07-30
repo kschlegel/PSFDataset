@@ -20,6 +20,7 @@ class TestSubset:
         sub_seq = list(rnd_subset(seq))
         assert len(sub_seq) == 3
         assert sub_seq == [2, 3, 0] or sub_seq == [3, 2, 0]
+        assert isinstance(rnd_subset.get_description(), dict)
 
     def test_FirstN(self):
         first_n = FirstN(3)
@@ -28,6 +29,7 @@ class TestSubset:
         # Test padding with zeros
         seq = np.array([i for i in range(2)])
         assert list(first_n(seq)) == [0, 1, 0]
+        assert isinstance(first_n.get_description(), dict)
 
     def test_SubSample(self):
         test_input = np.array([i for i in range(30)])
@@ -36,3 +38,4 @@ class TestSubset:
         output = subsample(test_input)
         np.testing.assert_array_equal(output, expected)
         assert output.dtype == test_input.dtype
+        assert isinstance(subsample.get_description(), dict)

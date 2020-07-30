@@ -51,3 +51,4 @@ class TestTuples:
         for i in range(tuples.shape[1]):
             arr = list(np.sort(tuples[0, i].reshape(4)))
             assert arr in expected
+        assert isinstance(tup.get_description(), dict)

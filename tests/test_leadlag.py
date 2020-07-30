@@ -41,6 +41,7 @@ class TestLeadLag:
                          [[3], [3], [3]]]])
         output = llt(test_input)
         np.testing.assert_array_equal(output, exp)
+        assert isinstance(llt.get_description(), dict)
 
     def test_MultiDelayedTransformation(self):
         test_input = np.array([[[1, 2], [2, 3], [3, 4], [4, 5]]])
@@ -60,3 +61,4 @@ class TestLeadLag:
                          [[0, 0], [4, 5], [3, 4]], [[0, 0], [0, 0], [4, 5]]]])
         output = mdt(test_input)
         np.testing.assert_array_equal(output, exp)
+        assert isinstance(mdt.get_description(), dict)

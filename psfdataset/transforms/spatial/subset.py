@@ -30,7 +30,7 @@ class RandomSubset:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, sample_size, seed=None):
@@ -49,17 +49,15 @@ class RandomSubset:
 
     def __call__(self, sample):
         if len(sample) > self._sample_size:
-            rnd_sample = []
-            while len(rnd_sample) < self._sample_size:
-                rnd = np.random.randint(0, len(sample))
-                if rnd not in rnd_sample:
-                    rnd_sample.append(rnd)
+            rnd_sample = np.random.choice(len(sample),
+                                          size=self._sample_size,
+                                          replace=False)
             return sample[np.sort(rnd_sample)]
         else:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._sample_size)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -83,7 +81,7 @@ class FirstN:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, n):
@@ -102,7 +100,7 @@ class FirstN:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._n)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -124,7 +122,7 @@ class SubSample:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformation.
     """
     def __init__(self, step_size):
@@ -137,10 +135,10 @@ class SubSample:
         self._step_size = step_size
 
     def __call__(self, sample):
-        sub_sample = [i for i in range(0, sample.shape[0], self._step_size)]
+        sub_sample = list(range(0, sample.shape[0], self._step_size))
         return sample[sub_sample]
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformation.
 

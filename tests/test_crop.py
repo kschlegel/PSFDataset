@@ -19,6 +19,7 @@ class TestCrop:
         output = crop(test_input)
         np.testing.assert_array_equal(output, expected)
         assert output.dtype == test_input.dtype
+        assert isinstance(crop.get_description(), dict)
 
     def test_CropConfidenceScores(self):
         # test crop with ignoring points with 0 confidence (missing data)
@@ -29,3 +30,4 @@ class TestCrop:
         output = crop(test_input)
         np.testing.assert_array_equal(output, expected)
         assert output.dtype == test_input.dtype
+        assert isinstance(crop.get_description(), dict)

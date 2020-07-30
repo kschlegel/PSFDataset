@@ -37,7 +37,7 @@ class PSFDataset:
         Return dimension of feature vector.
     get_labels()
         Return a numpy array of all labels of the dataset.
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the dataset.
     save(filename)
         Save the dataset.
@@ -56,8 +56,8 @@ class PSFDataset:
         self._data = []
         # _labels contains the ground truth classification labels
         self._labels = []
-        # _transform is a callable sequence of transformations to be applied to
-        # every data elemtn when added
+        # _transform is a callable object, to be applied to every data element
+        # when added
         self._transform = transform
 
     def __getitem__(self, index):
@@ -85,19 +85,18 @@ class PSFDataset:
         if self._transform is not None:
             keypoints = self._transform(keypoints)
         # Make sure all data added has the same shape
-        if len(self._data) > 0:
-            if keypoints.shape != self._data[0].shape:
-                raise Exception("All data must have the same shape!")
+        if len(self._data) > 0 and keypoints.shape != self._data[0].shape:
+            raise ValueError("All data must have the same shape!")
         self._data.append(keypoints)
         self._labels.append(label)
 
-    def from_iterator(self, data_iterator):
+    def fill_from_iterator(self, data_iterator):
         """
         Fill dataset with data using given iterator.
 
-        Takes an iterator returning a list or tuple of keypoints (of shape
-        [frame_id,keypoint,coords]),label pairs and adds everything to the
-        dataset using the add_element method.
+        Takes an iterator on a collection of keypoints, label pairs (with the
+        keypoints of shape [frame_id,keypoint,coords]) and adds everything to
+        the dataset using the add_element method.
 
         Parameters
         ----------
@@ -110,7 +109,7 @@ class PSFDataset:
     def get_iterator(self):
         """ Python generator for iterating over the dataset. """
         for i in range(len(self._data)):
-            yield self[i]
+            yield self[i]  # return self[i] to use __getitem__ implementation
 
     def get_data_dimension(self):
         """
@@ -127,7 +126,9 @@ class PSFDataset:
         if len(self._data) > 0:
             return np.prod(self._data[0].shape)
         else:
-            return 0
+            raise ValueError(
+                "The dimension of the feature vector is undefined as the "
+                "dataset does nopt contain any data yet")
 
     def get_labels(self):
         """
@@ -142,7 +143,7 @@ class PSFDataset:
         """
         return np.array(self._labels)
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the dataset.
 
@@ -158,7 +159,7 @@ class PSFDataset:
             Description of the dataset
         """
         if self._transform:
-            desc = self._transform.get_desc()
+            desc = self._transform.get_description()
         else:
             desc = {}
         return desc
@@ -183,7 +184,7 @@ class PSFDataset:
         np.savez(filename,
                  data=np.array(self._data),
                  labels=np.array(self._labels))
-        transform = self._transform.get_desc()
+        transform = self._transform.get_description()
         with open(filename + ".json", "w") as json_file:
             json.dump(transform, json_file)
 

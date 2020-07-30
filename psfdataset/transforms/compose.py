@@ -19,14 +19,14 @@ class Compose:
 
     Methods
     -------
-    get_desc()
+    get_description()
         Return a dictionary describing the properties of the transformations.
     """
     def __init__(self, transforms):
         """
         Parameters
         ----------
-        transforms : list of tuple of transform objects
+        transforms : collection of transform objects
             Collection of transformations to be applied consecutively
         """
         self._transforms = transforms
@@ -36,7 +36,7 @@ class Compose:
             data = transform(data)
         return data
 
-    def get_desc(self):
+    def get_description(self):
         """
         Returns a dictionary describing all properties of the transformations.
 
@@ -51,7 +51,7 @@ class Compose:
         desc = {}
         order = ""
         for transform in self._transforms:
-            desc.update(transform.get_desc())
+            desc.update(transform.get_description())
             # __class__ property is <class 'a.b.c.d'>
             # cut off clutter at start&end end split by module structure
             cls = str(transform.__class__)[8:-2].split(".")
