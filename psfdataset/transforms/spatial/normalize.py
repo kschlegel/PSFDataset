@@ -7,6 +7,8 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional, Tuple
+
 import numpy as np
 
 
@@ -22,7 +24,9 @@ class Normalize:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, data_max=None, data_min=0):
+    def __init__(self,
+                 data_max: Optional[int] = None,
+                 data_min: Optional[int] = 0) -> None:
         """
         Parameters
         ----------
@@ -42,7 +46,7 @@ class Normalize:
             self._factor = None
             self._shift = None
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         if self._factor is None:
             data_max = np.amax(sample)
             data_min = np.amin(sample)
@@ -54,7 +58,8 @@ class Normalize:
         transformed -= shift
         return transformed
 
-    def _compute_params(self, data_max, data_min):
+    def _compute_params(self, data_max: int,
+                        data_min: int) -> Tuple[float, float]:
         data_range = data_max - data_min
         if data_range == 0:
             return 1, 0
@@ -62,7 +67,7 @@ class Normalize:
         shift = 2 * data_min / data_range + 1
         return factor, shift
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -92,14 +97,14 @@ class NormalizeWithoutConfidence(Normalize):
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         transformed = super().__call__(sample[:, :, :-1])
         transformed = np.concatenate(
             (transformed, sample[:, :, -1].reshape(sample.shape[:-1] + (1, ))),
             axis=2)
         return transformed
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -127,13 +132,13 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         transformed = super().__call__(sample)
         transformed[:, :, -1] *= 2
         transformed[:, :, -1] -= 1
         return transformed
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

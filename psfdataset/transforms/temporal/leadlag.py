@@ -5,6 +5,8 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional
+
 import numpy as np
 
 
@@ -19,7 +21,7 @@ class LeadLagTransformation:
     The path 1,2,3 with delay 2 turns into
         (1,1,1),(2,1,1),(2,2,1),(2,2,2),(3,2,2),(3,3,2),(3,3,3)
     """
-    def __init__(self, delay=1):
+    def __init__(self, delay: Optional[int] = 1) -> None:
         """
         Parameters
         ----------
@@ -28,7 +30,7 @@ class LeadLagTransformation:
         """
         self._delay = delay
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         lead_lag = np.zeros((sample.shape[0],
                              (self._delay + 1) * sample.shape[1] - self._delay,
                              self._delay + 1, sample.shape[2]),
@@ -48,7 +50,7 @@ class LeadLagTransformation:
                                         k][k] = sample[i][frame]
         return lead_lag
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -74,7 +76,7 @@ class MultiDelayedTransformation:
     The path 1,2,3 with delay 1 turns into
         (1,0),(2,1),(3,2),(0,3)
     """
-    def __init__(self, delay=1):
+    def __init__(self, delay: Optional[int] = 1) -> None:
         """
         Parameters
         ----------
@@ -83,7 +85,7 @@ class MultiDelayedTransformation:
         """
         self._delay = delay
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         delayed_path = []
         delayed_path = np.zeros(
             (sample.shape[0], sample.shape[1] + self._delay, self._delay + 1,
@@ -95,7 +97,7 @@ class MultiDelayedTransformation:
                     delayed_path[i][frame + j][j] = sample[i][frame]
         return delayed_path
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

@@ -5,6 +5,8 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional
+
 import numpy as np
 
 
@@ -27,7 +29,7 @@ class SpatioTemporalPath:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, disintegrate=True):
+    def __init__(self, disintegrate: Optional[bool] = True) -> None:
         """
         Parameters
         ----------
@@ -37,7 +39,7 @@ class SpatioTemporalPath:
         """
         self._disintegrate = disintegrate
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         if self._disintegrate:
             sample = sample.reshape(sample.shape[0], -1, 1)
         elif len(sample.shape) > 3:
@@ -47,7 +49,7 @@ class SpatioTemporalPath:
             sample = sample.reshape(sample.shape[0:2] + (-1, ))
         return np.transpose(sample, (1, 0, 2))
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

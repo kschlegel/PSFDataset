@@ -8,6 +8,10 @@
 import numpy as np
 import json
 from tqdm import tqdm
+from typing import Tuple, Callable, Optional, Iterator
+
+KeypointLabelPair = Tuple[np.ndarray, int]
+KeypointTransformation = Callable[[np.ndarray], np.ndarray]
 
 
 class PSFDataset:
@@ -44,7 +48,8 @@ class PSFDataset:
     load(filename)
         Load the dataset.
     """
-    def __init__(self, transform=None):
+    def __init__(self,
+                 transform: Optional[KeypointTransformation] = None) -> None:
         """
         Parameters
         ----------
@@ -60,14 +65,14 @@ class PSFDataset:
         # when added
         self._transform = transform
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> KeypointLabelPair:
         """ Returns the flattened feature vector and its label. """
         return (self._data[index].reshape(-1), self._labels[index])
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._data)
 
-    def add_element(self, keypoints, label):
+    def add_element(self, keypoints: np.ndarray, label: int) -> None:
         """
         Takes keypoints and label and add them to the dataset.
 
@@ -90,7 +95,8 @@ class PSFDataset:
         self._data.append(keypoints)
         self._labels.append(label)
 
-    def fill_from_iterator(self, data_iterator):
+    def fill_from_iterator(self,
+                           data_iterator: Iterator[KeypointLabelPair]) -> None:
         """
         Fill dataset with data using given iterator.
 
@@ -106,12 +112,12 @@ class PSFDataset:
         for element in tqdm(data_iterator):
             self.add_element(element[0], element[1])
 
-    def get_iterator(self):
+    def get_iterator(self) -> Iterator[KeypointLabelPair]:
         """ Python generator for iterating over the dataset. """
         for i in range(len(self._data)):
             yield self[i]  # return self[i] to use __getitem__ implementation
 
-    def get_data_dimension(self):
+    def get_data_dimension(self) -> int:
         """
         Returns size of feature vector.
 
@@ -130,7 +136,7 @@ class PSFDataset:
                 "The dimension of the feature vector is undefined as the "
                 "dataset does nopt contain any data yet")
 
-    def get_labels(self):
+    def get_labels(self) -> np.ndarray:
         """
         Return array of all labels of the entire dataset.
 
@@ -143,7 +149,7 @@ class PSFDataset:
         """
         return np.array(self._labels)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the dataset.
 
@@ -164,7 +170,7 @@ class PSFDataset:
             desc = {}
         return desc
 
-    def save(self, filename):
+    def save(self, filename: str) -> None:
         """
         Saves the dataset to file.
 
@@ -188,7 +194,7 @@ class PSFDataset:
         with open(filename + ".json", "w") as json_file:
             json.dump(transform, json_file)
 
-    def load(self, filename):
+    def load(self, filename: str) -> None:
         """
         Load the dataset from file.
 

@@ -22,7 +22,7 @@ class Tuples:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, tuple_size):
+    def __init__(self, tuple_size: int) -> None:
         """
         Parameters
         ----------
@@ -31,7 +31,7 @@ class Tuples:
         """
         self._tuple_size = tuple_size
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         tuples = []
         for frame in range(sample.shape[0]):
             tuples_frame = []
@@ -40,7 +40,7 @@ class Tuples:
             tuples.append(tuples_frame)
         return np.array(tuples)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

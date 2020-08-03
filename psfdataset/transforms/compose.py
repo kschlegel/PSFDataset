@@ -5,6 +5,9 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+import numpy as np
+
+from ..psfdataset import KeypointTransformation
 
 
 class Compose:
@@ -22,7 +25,7 @@ class Compose:
     get_description()
         Return a dictionary describing the properties of the transformations.
     """
-    def __init__(self, transforms):
+    def __init__(self, transforms: KeypointTransformation) -> None:
         """
         Parameters
         ----------
@@ -31,12 +34,12 @@ class Compose:
         """
         self._transforms = transforms
 
-    def __call__(self, data):
+    def __call__(self, data: np.ndarray) -> np.ndarray:
         for transform in self._transforms:
             data = transform(data)
         return data
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformations.
 

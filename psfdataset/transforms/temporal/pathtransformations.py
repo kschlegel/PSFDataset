@@ -19,14 +19,14 @@ class TimeIncorporatedTransformation:
     The path 2,8,4 turns into
         (2,0),(8,1),(4,2)
     """
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         time_dimension = np.array([[[j / (len(sample[i]) - 1)]
                                     for j in range(len(sample[i]))]
                                    for i in range(len(sample))],
                                   dtype=np.float64)
         return np.concatenate((sample, time_dimension), axis=2)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -52,7 +52,7 @@ class InvisibilityResetTransformation:
     The Path 1,2,3 turns into
         (1,1),(2,1),(3,1),(3,0),(0,0)
     """
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         extended = np.concatenate(
             (sample,
              np.ones(
@@ -66,7 +66,7 @@ class InvisibilityResetTransformation:
         extended[:, -2, -1] = 0
         return extended
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

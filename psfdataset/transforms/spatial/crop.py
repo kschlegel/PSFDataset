@@ -5,6 +5,8 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional
+
 import numpy as np
 
 
@@ -26,10 +28,10 @@ class Crop:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, ignore_missing=False):
+    def __init__(self, ignore_missing: Optional[bool] = False) -> None:
         self._ignore_missing = ignore_missing
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         if self._ignore_missing:
             mins = np.full(sample.shape[2] - 1, np.inf)
             for frame in range(sample.shape[0]):
@@ -49,7 +51,7 @@ class Crop:
             transformed = sample - mins
         return transformed
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

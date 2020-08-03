@@ -9,10 +9,12 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional
+
 import numpy as np
 
 
-def _zero_pad(sample, length):
+def _zero_pad(sample: np.ndarray, length: int) -> np.ndarray:
     if len(sample) == length:
         return sample
     else:
@@ -33,7 +35,7 @@ class RandomSubset:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, sample_size, seed=None):
+    def __init__(self, sample_size: int, seed: Optional[int] = None) -> None:
         """
         Parameters
         ----------
@@ -47,7 +49,7 @@ class RandomSubset:
         if seed is not None:
             np.random.seed(seed)
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         if len(sample) > self._sample_size:
             rnd_sample = np.random.choice(len(sample),
                                           size=self._sample_size,
@@ -57,7 +59,7 @@ class RandomSubset:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._sample_size)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -84,7 +86,7 @@ class FirstN:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, n):
+    def __init__(self, n: int) -> None:
         """
         Parameters
         ----------
@@ -93,14 +95,14 @@ class FirstN:
         """
         self._n = n
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         if len(sample) >= self._n:
             return sample[0:self._n]
         else:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._n)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -125,7 +127,7 @@ class SubSample:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, step_size):
+    def __init__(self, step_size: int) -> None:
         """
         Parameters
         ----------
@@ -134,11 +136,11 @@ class SubSample:
         """
         self._step_size = step_size
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         sub_sample = list(range(0, sample.shape[0], self._step_size))
         return sample[sub_sample]
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

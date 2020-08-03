@@ -6,6 +6,8 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Optional
+
 import numpy as np
 from esig import tosig
 
@@ -25,7 +27,9 @@ class Signature:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, signature_level, drop_zeroth_term=True):
+    def __init__(self,
+                 signature_level: int,
+                 drop_zeroth_term: Optional[bool] = True) -> None:
         """
         Parameters
         ----------
@@ -38,7 +42,7 @@ class Signature:
         self._signature_level = signature_level
         self._drop_zeroth_term = drop_zeroth_term
 
-    def __call__(self, sample):
+    def __call__(self, sample: np.ndarray) -> np.ndarray:
         signatures = []
         for frame in range(sample.shape[0]):
             signatures_frame = []
@@ -50,7 +54,7 @@ class Signature:
             signatures.append(signatures_frame)
         return np.array(signatures)
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of the transformation.
 

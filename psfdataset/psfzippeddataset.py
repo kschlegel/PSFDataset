@@ -6,6 +6,9 @@
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
 import numpy as np
+from typing import Sequence, Iterator
+
+from .psfdataset import PSFDataset, KeypointLabelPair
 
 
 class PSFZippedDataset():
@@ -31,11 +34,11 @@ class PSFZippedDataset():
         Return a dictionary describing the properties of the dataset.
 
     """
-    def __init__(self, datasets):
+    def __init__(self, datasets: Sequence[PSFDataset]) -> None:
         """
         Parameters
         ----------
-        datasets : list/tuple of PSFDatasets
+        datasets : Collection of PSFDatasets
             A collection of existing PSFDatasets to be joined into one dataset.
             Datasets are assumed to come from the same dataset, i.e. have the
             same length and consistent labels across the collection
@@ -50,7 +53,7 @@ class PSFZippedDataset():
                     "All datasets in the collection must have equal length.")
         self._datasets = datasets
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> KeypointLabelPair:
         """ Returns the flattened feature vector and its label. """
         keypoint_arr = []
         for dataset in self._datasets:
@@ -58,15 +61,15 @@ class PSFZippedDataset():
             keypoint_arr.append(keypoints)
         return (np.concatenate(keypoint_arr), label)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._datasets[0])
 
-    def get_iterator(self):
+    def get_iterator(self) -> Iterator[KeypointLabelPair]:
         """ Python generator for iterating over the dataset. """
         for i in range(len(self)):
             yield self[i]  # return self[i] to use __getitem__ implementation
 
-    def get_data_dimension(self):
+    def get_data_dimension(self) -> int:
         """
         Returns size of feature vector.
 
@@ -80,7 +83,7 @@ class PSFZippedDataset():
         """
         return np.sum([d.get_data_dimension() for d in self._datasets])
 
-    def get_labels(self):
+    def get_labels(self) -> np.ndarray:
         """
         Return array of all labels of the entire dataset.
 
@@ -93,7 +96,7 @@ class PSFZippedDataset():
         """
         return self._datasets[-1].get_labels()
 
-    def get_description(self):
+    def get_description(self) -> dict:
         """
         Returns a dictionary describing all properties of all datasets.
 
