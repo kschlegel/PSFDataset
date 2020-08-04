@@ -8,7 +8,8 @@
 import numpy as np
 from typing import Sequence, Iterator
 
-from .psfdataset import PSFDataset, KeypointLabelPair
+from .types import KeypointLabelPair, DescriptionDict
+from .psfdataset import PSFDataset
 
 
 class PSFZippedDataset():
@@ -96,7 +97,7 @@ class PSFZippedDataset():
         """
         return self._datasets[-1].get_labels()
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of all datasets.
 
@@ -113,7 +114,7 @@ class PSFZippedDataset():
         dict
             Description of the dataset
         """
-        desc = {}
+        desc: DescriptionDict = {}
         for i, dataset in enumerate(self._datasets):
             ds_desc = dataset.get_description()
             for key, val in ds_desc.items():

@@ -5,9 +5,9 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
-from typing import Optional
-
 import numpy as np
+
+from ...types import DescriptionDict
 
 
 class LeadLagTransformation:
@@ -21,7 +21,7 @@ class LeadLagTransformation:
     The path 1,2,3 with delay 2 turns into
         (1,1,1),(2,1,1),(2,2,1),(2,2,2),(3,2,2),(3,3,2),(3,3,3)
     """
-    def __init__(self, delay: Optional[int] = 1) -> None:
+    def __init__(self, delay: int = 1) -> None:
         """
         Parameters
         ----------
@@ -50,7 +50,7 @@ class LeadLagTransformation:
                                         k][k] = sample[i][frame]
         return lead_lag
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -76,7 +76,7 @@ class MultiDelayedTransformation:
     The path 1,2,3 with delay 1 turns into
         (1,0),(2,1),(3,2),(0,3)
     """
-    def __init__(self, delay: Optional[int] = 1) -> None:
+    def __init__(self, delay: int = 1) -> None:
         """
         Parameters
         ----------
@@ -97,7 +97,7 @@ class MultiDelayedTransformation:
                     delayed_path[i][frame + j][j] = sample[i][frame]
         return delayed_path
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

@@ -8,6 +8,8 @@
 import numpy as np
 from itertools import combinations
 
+from ...types import DescriptionDict
+
 
 class Tuples:
     """
@@ -40,7 +42,7 @@ class Tuples:
             tuples.append(tuples_frame)
         return np.array(tuples)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

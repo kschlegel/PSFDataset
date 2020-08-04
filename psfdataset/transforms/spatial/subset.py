@@ -13,6 +13,8 @@ from typing import Optional
 
 import numpy as np
 
+from ...types import DescriptionDict
+
 
 def _zero_pad(sample: np.ndarray, length: int) -> np.ndarray:
     if len(sample) == length:
@@ -59,7 +61,7 @@ class RandomSubset:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._sample_size)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -68,7 +70,7 @@ class RandomSubset:
         dict
             Description of the transformation
         """
-        desc = {"(s)rnd/sample_size": self._sample_size}
+        desc: DescriptionDict = {"(s)rnd/sample_size": self._sample_size}
         if self._seed is not None:
             desc["(s)rnd/seed"] = self._seed
         return desc
@@ -102,7 +104,7 @@ class FirstN:
             # input is shorter than sample size, return everything zero-padded
             return _zero_pad(sample, self._n)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -140,7 +142,7 @@ class SubSample:
         sub_sample = list(range(0, sample.shape[0], self._step_size))
         return sample[sub_sample]
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

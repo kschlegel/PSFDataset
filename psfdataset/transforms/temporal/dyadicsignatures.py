@@ -6,10 +6,12 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
-from typing import Optional
+from typing import List
 
 import numpy as np
 from esig import tosig
+
+from ...types import DescriptionDict
 
 
 class DyadicPathSignatures:
@@ -29,8 +31,8 @@ class DyadicPathSignatures:
     """
     def __init__(self,
                  dyadic_levels: int,
-                 signature_level: Optional[int] = 2,
-                 overlapping: Optional[bool] = False) -> None:
+                 signature_level: int = 2,
+                 overlapping: bool = False) -> None:
         """
         Parameters
         ----------
@@ -47,7 +49,9 @@ class DyadicPathSignatures:
         self._overlapping = overlapping
 
     def __call__(self, sample: np.ndarray) -> np.ndarray:
-        dyadic_pieces = [[] for i in range(sample.shape[0])]
+        dyadic_pieces: List[List[np.ndarray]] = [
+            [] for i in range(sample.shape[0])
+        ]
         for dyadic_level in range(self._dyadic_levels + 1):
             if self._overlapping:
                 num_pieces = 2**(dyadic_level + 1) - 1
@@ -75,7 +79,7 @@ class DyadicPathSignatures:
                     ]
         return np.array(dyadic_pieces)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

@@ -25,7 +25,6 @@ temporal
     Temporal transformations to be applied to data paths of the form
     [element,frame,coords]
 """
-
 from . import spatial
 from . import temporal
 from .compose import Compose

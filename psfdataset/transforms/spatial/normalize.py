@@ -7,9 +7,11 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 
 import numpy as np
+
+from ...types import DescriptionDict
 
 
 class Normalize:
@@ -26,7 +28,7 @@ class Normalize:
     """
     def __init__(self,
                  data_max: Optional[int] = None,
-                 data_min: Optional[int] = 0) -> None:
+                 data_min: int = 0) -> None:
         """
         Parameters
         ----------
@@ -39,6 +41,8 @@ class Normalize:
             None. Otherwise the data is assumed to be bigger or equal than this
             value in every dimension.
         """
+        self._factor: Optional[float]
+        self._shift: Optional[float]
         if data_max is not None:
             self._factor, self._shift = self._compute_params(
                 data_max, data_min)
@@ -47,7 +51,7 @@ class Normalize:
             self._shift = None
 
     def __call__(self, sample: np.ndarray) -> np.ndarray:
-        if self._factor is None:
+        if self._factor is None or self._shift is None:
             data_max = np.amax(sample)
             data_min = np.amin(sample)
             factor, shift = self._compute_params(data_max, data_min)
@@ -67,7 +71,7 @@ class Normalize:
         shift = 2 * data_min / data_range + 1
         return factor, shift
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -76,7 +80,7 @@ class Normalize:
         dict
             Description of the transformation
         """
-        desc = {"(s)Normalize": "all"}
+        desc: Dict = {"(s)Normalize": "all"}
         if self._factor is not None:
             desc["(s)Normalize/factor"] = self._factor
             desc["(s)Normalize/shift"] = self._shift
@@ -104,7 +108,7 @@ class NormalizeWithoutConfidence(Normalize):
             axis=2)
         return transformed
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -138,7 +142,7 @@ class NormalizeWithConfidence(NormalizeWithoutConfidence):
         transformed[:, :, -1] -= 1
         return transformed
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

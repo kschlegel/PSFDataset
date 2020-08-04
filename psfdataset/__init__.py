@@ -24,6 +24,7 @@ transforms
     Classes to compute the various transformations which may be used as part of
     the path-signature feature methodology.
 """
+import numpy as np
 
 from .psfdataset import PSFDataset
 from .psfzippeddataset import PSFZippedDataset

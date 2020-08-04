@@ -8,10 +8,9 @@
 import numpy as np
 import json
 from tqdm import tqdm
-from typing import Tuple, Callable, Optional, Iterator
+from typing import List, Optional, Iterator
 
-KeypointLabelPair = Tuple[np.ndarray, int]
-KeypointTransformation = Callable[[np.ndarray], np.ndarray]
+from .types import KeypointLabelPair, DescriptionDict, KeypointTransformation
 
 
 class PSFDataset:
@@ -58,11 +57,15 @@ class PSFDataset:
             added to the dataset. (default is None)
         """
         # _data contains the (transformed) keypoint data
-        self._data = []
+        self._data: List[np.ndarray] = []
         # _labels contains the ground truth classification labels
-        self._labels = []
+        self._labels: List[int] = []
         # _transform is a callable object, to be applied to every data element
         # when added
+        if transform is None:
+            # for type checking purposes only, want self._transform to be None
+            # in this case
+            pass
         self._transform = transform
 
     def __getitem__(self, index: int) -> KeypointLabelPair:
@@ -149,7 +152,7 @@ class PSFDataset:
         """
         return np.array(self._labels)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the dataset.
 
@@ -164,10 +167,9 @@ class PSFDataset:
         dict
             Description of the dataset
         """
-        if self._transform:
+        desc: DescriptionDict = {}
+        if self._transform is not None:
             desc = self._transform.get_description()
-        else:
-            desc = {}
         return desc
 
     def save(self, filename: str) -> None:
@@ -190,7 +192,11 @@ class PSFDataset:
         np.savez(filename,
                  data=np.array(self._data),
                  labels=np.array(self._labels))
-        transform = self._transform.get_description()
+        transform: Optional[DescriptionDict]
+        if self._transform is not None:
+            transform = self._transform.get_description()
+        else:
+            transform = None
         with open(filename + ".json", "w") as json_file:
             json.dump(transform, json_file)
 

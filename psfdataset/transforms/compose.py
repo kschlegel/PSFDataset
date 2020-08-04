@@ -5,9 +5,11 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
+from typing import Sequence
+
 import numpy as np
 
-from ..psfdataset import KeypointTransformation
+from ..types import KeypointTransformation, DescriptionDict
 
 
 class Compose:
@@ -25,7 +27,7 @@ class Compose:
     get_description()
         Return a dictionary describing the properties of the transformations.
     """
-    def __init__(self, transforms: KeypointTransformation) -> None:
+    def __init__(self, transforms: Sequence[KeypointTransformation]) -> None:
         """
         Parameters
         ----------
@@ -39,7 +41,7 @@ class Compose:
             data = transform(data)
         return data
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformations.
 
@@ -51,7 +53,7 @@ class Compose:
         dict
             Description of the transformations
         """
-        desc = {}
+        desc: DescriptionDict = {}
         order = ""
         for transform in self._transforms:
             desc.update(transform.get_description())

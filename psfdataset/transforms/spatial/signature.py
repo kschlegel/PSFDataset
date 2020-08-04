@@ -6,10 +6,10 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
-from typing import Optional
-
 import numpy as np
 from esig import tosig
+
+from ...types import DescriptionDict
 
 
 class Signature:
@@ -29,7 +29,7 @@ class Signature:
     """
     def __init__(self,
                  signature_level: int,
-                 drop_zeroth_term: Optional[bool] = True) -> None:
+                 drop_zeroth_term: bool = True) -> None:
         """
         Parameters
         ----------
@@ -54,7 +54,7 @@ class Signature:
             signatures.append(signatures_frame)
         return np.array(signatures)
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 

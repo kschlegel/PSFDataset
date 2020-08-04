@@ -5,9 +5,9 @@
 # Released under Apache License, Version 2.0
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
-from typing import Optional
-
 import numpy as np
+
+from ...types import DescriptionDict
 
 
 class Crop:
@@ -28,7 +28,7 @@ class Crop:
     get_description()
         Return a dictionary describing the properties of the transformation.
     """
-    def __init__(self, ignore_missing: Optional[bool] = False) -> None:
+    def __init__(self, ignore_missing: bool = False) -> None:
         self._ignore_missing = ignore_missing
 
     def __call__(self, sample: np.ndarray) -> np.ndarray:
@@ -51,7 +51,7 @@ class Crop:
             transformed = sample - mins
         return transformed
 
-    def get_description(self) -> dict:
+    def get_description(self) -> DescriptionDict:
         """
         Returns a dictionary describing all properties of the transformation.
 
@@ -60,7 +60,7 @@ class Crop:
         dict
             Description of the transformation
         """
-        desc = {"(s)Crop": True}
+        desc: DescriptionDict = {"(s)Crop": True}
         # this is only attached when True because for datasets without
         # confidence score this setting should always be False
         if self._ignore_missing:
