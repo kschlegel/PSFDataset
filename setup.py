@@ -15,4 +15,9 @@ setup(
         'tqdm>=4.46.1',
         'esig>=0.7.1',
     ],
+    extras_require={
+        ':python_version < "3.8"': [
+            'typing_extensions>=3.7.4.2',
+        ],
+    },
 )

@@ -1,5 +1,9 @@
 from typing import Tuple, Dict, Union
-from typing_extensions import Protocol
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 import numpy as np
 
