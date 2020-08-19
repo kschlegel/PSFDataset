@@ -6,7 +6,7 @@
 # email kevinschlegel@cantab.net
 # -----------------------------------------------------------
 import numpy as np
-from typing import Sequence, Iterator
+from typing import Sequence, Iterator, Union, Tuple, Any
 
 from .types import KeypointLabelPair, DescriptionDict
 from .psfdataset import PSFDataset
@@ -35,7 +35,9 @@ class PSFZippedDataset():
         Return a dictionary describing the properties of the dataset.
 
     """
-    def __init__(self, datasets: Sequence[PSFDataset]) -> None:
+    def __init__(self,
+                 datasets: Sequence[PSFDataset],
+                 flattened: bool = True) -> None:
         """
         Parameters
         ----------
@@ -53,6 +55,7 @@ class PSFZippedDataset():
                 raise Exception(
                     "All datasets in the collection must have equal length.")
         self._datasets = datasets
+        self._flattened = flattened
 
     def __getitem__(self, index: int) -> KeypointLabelPair:
         """ Returns the flattened feature vector and its label. """
@@ -60,7 +63,10 @@ class PSFZippedDataset():
         for dataset in self._datasets:
             keypoints, label = dataset[index]
             keypoint_arr.append(keypoints)
-        return (np.concatenate(keypoint_arr), label)
+        if self._flattened:
+            return (np.concatenate(keypoint_arr), label)
+        else:
+            return (tuple(keypoint_arr), label)
 
     def __len__(self) -> int:
         return len(self._datasets[0])
@@ -70,7 +76,7 @@ class PSFZippedDataset():
         for i in range(len(self)):
             yield self[i]  # return self[i] to use __getitem__ implementation
 
-    def get_data_dimension(self) -> int:
+    def get_data_dimension(self) -> Union[int, Tuple[Any, ...]]:
         """
         Returns size of feature vector.
 
@@ -82,7 +88,10 @@ class PSFZippedDataset():
         int
             The size of the feature vector
         """
-        return np.sum([d.get_data_dimension() for d in self._datasets])
+        if self._flattened:
+            return np.sum([d.get_data_dimension() for d in self._datasets])
+        else:
+            return tuple([d.get_data_dimension() for d in self._datasets])
 
     def get_labels(self) -> np.ndarray:
         """

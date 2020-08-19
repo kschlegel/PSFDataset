@@ -8,9 +8,11 @@
 import numpy as np
 import json
 from tqdm import tqdm
-from typing import List, Optional, Iterator
+from typing import List, Optional, Iterator, Union, Tuple
 
 from .types import KeypointLabelPair, DescriptionDict, KeypointTransformation
+
+from .psfdatasubset import PSFDataSubset
 
 
 class PSFDataset:
@@ -32,6 +34,8 @@ class PSFDataset:
     -------
     add_element(keypoints, label)
         Take keypoints and label and add them to the dataset.
+    set_split(desc, train_ids, test_ids)
+        Sets the training/test split for the dataset.
     from_iterator(data_iterator)
         Take iterator for keypoint label pairs and fill dataset.
     get_iterator()
@@ -48,7 +52,9 @@ class PSFDataset:
         Load the dataset.
     """
     def __init__(self,
-                 transform: Optional[KeypointTransformation] = None) -> None:
+                 transform: Optional[KeypointTransformation] = None,
+                 flattened: bool = True,
+                 dtype: np.dtype = np.float64) -> None:
         """
         Parameters
         ----------
@@ -67,10 +73,41 @@ class PSFDataset:
             # in this case
             pass
         self._transform = transform
+        self._flattened = flattened
+        self._dtype = dtype
+        # optionally the dataset can hold a training/testset split
+        # using the PSFDataSubset module
+        self._trainingset: Optional[PSFDataSubset] = None
+        self._testset: Optional[PSFDataSubset] = None
+        self._split_desc: DescriptionDict = {}
+
+    # properties to access trainingset and testset subsets of the dataset.
+    # No setters implemented as setting the subsets should only happen through
+    # the set_split method which also sets the description dictionary.
+    @property
+    def trainingset(self) -> Optional[PSFDataSubset]:
+        """
+        Access to the training subset of the dataset.
+
+        Returns None if no split is defined.
+        """
+        return self._trainingset
+
+    @property
+    def testset(self) -> Optional[PSFDataSubset]:
+        """
+        Access to the test subset of the dataset.
+
+        Returns None if no split is defined.
+        """
+        return self._testset
 
     def __getitem__(self, index: int) -> KeypointLabelPair:
         """ Returns the flattened feature vector and its label. """
-        return (self._data[index].reshape(-1), self._labels[index])
+        if self._flattened:
+            return (self._data[index].reshape(-1), self._labels[index])
+        else:
+            return (self._data[index], self._labels[index])
 
     def __len__(self) -> int:
         return len(self._data)
@@ -92,11 +129,29 @@ class PSFDataset:
         """
         if self._transform is not None:
             keypoints = self._transform(keypoints)
-        # Make sure all data added has the same shape
-        if len(self._data) > 0 and keypoints.shape != self._data[0].shape:
-            raise ValueError("All data must have the same shape!")
-        self._data.append(keypoints)
+        self._data.append(keypoints.astype(self._dtype))
         self._labels.append(label)
+
+    def set_split(self, description: DescriptionDict, train_ids: List[int],
+                  test_ids: List[int]):
+        """
+        Sets the training/test split for the dataset.
+
+        The subsets can then be accessed via the trainingset and testset
+        properties.
+
+        Parameters
+        ----------
+        desc : dict
+            Dictionary with all information to identify the split in the logs.
+        train_ids : list of ints
+            List of the ids of elements of the trainingset
+        test_ids : list of ints
+            List of the ids of elements of the testset
+        """
+        self._split_desc = description
+        self._trainingset = PSFDataSubset(self, train_ids)
+        self._testset = PSFDataSubset(self, test_ids)
 
     def fill_from_iterator(self,
                            data_iterator: Iterator[KeypointLabelPair]) -> None:
@@ -120,7 +175,7 @@ class PSFDataset:
         for i in range(len(self._data)):
             yield self[i]  # return self[i] to use __getitem__ implementation
 
-    def get_data_dimension(self) -> int:
+    def get_data_dimension(self) -> Union[int, Tuple[int]]:
         """
         Returns size of feature vector.
 
@@ -133,7 +188,10 @@ class PSFDataset:
             The size of the feature vector
         """
         if len(self._data) > 0:
-            return np.prod(self._data[0].shape)
+            if self._flattened:
+                return np.prod(self._data[0].shape)
+            else:
+                return self._data[0].shape
         else:
             raise ValueError(
                 "The dimension of the feature vector is undefined as the "
@@ -170,6 +228,7 @@ class PSFDataset:
         desc: DescriptionDict = {}
         if self._transform is not None:
             desc = self._transform.get_description()
+        desc.update(self._split_desc)
         return desc
 
     def save(self, filename: str) -> None:
