@@ -66,3 +66,8 @@ class Compose:
             # Add order string minus the extra arrow at the end
         desc["compose"] = order[:-2]
         return desc
+
+    def explain(self, input_structure):
+        for transform in self._transforms:
+            input_structure = transform.explain(input_structure)
+        return input_structure

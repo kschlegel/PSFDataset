@@ -66,3 +66,6 @@ class Crop:
         if self._ignore_missing:
             desc["(s)crop/ignore_missing"] = True
         return desc
+
+    def explain(self, input_structure):
+        return input_structure

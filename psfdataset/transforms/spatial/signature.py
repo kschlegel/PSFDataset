@@ -67,3 +67,17 @@ class Signature:
             "(s)Sig/lvl": self._signature_level,
             "(s)Sig/drop_zeroth": self._drop_zeroth_term
         }
+
+    def explain(self, input_structure):
+        """
+        Expected input structure: [time, tuples, coords]
+        """
+        if isinstance(input_structure[2], list):
+            input_structure[2] = len(input_structure[2])
+        output_structure = [
+            input_structure[0], input_structure[1],
+            tosig.sigdim(input_structure[2], self._signature_level)
+        ]
+        if self._drop_zeroth_term:
+            output_structure[2] -= 1
+        return output_structure

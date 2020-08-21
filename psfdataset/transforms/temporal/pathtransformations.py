@@ -39,6 +39,21 @@ class TimeIncorporatedTransformation:
         """
         return {"(t)TIT": True}
 
+    def explain(self, input_structure):
+        """
+        Expected input structure: [elements, time, D]
+        """
+        output_structure = input_structure.copy()
+        if isinstance(input_structure[2], list):
+            output_structure[2] = input_structure[2].copy()
+            output_structure[2].append("t")
+        elif isinstance(input_structure[2], int):
+            output_structure[2] += 1
+        else:
+            raise Exception("Cannot explain the time incorporated transform "
+                            "for this type of input!")
+        return output_structure
+
 
 class InvisibilityResetTransformation:
     """
@@ -78,3 +93,18 @@ class InvisibilityResetTransformation:
             Description of the transformation
         """
         return {"(t)IRT": True}
+
+    def explain(self, input_structure):
+        """
+        Expected input structure: [elements, time, D]
+        """
+        output_structure = input_structure.copy()
+        if isinstance(input_structure[2], list):
+            output_structure[2] = input_structure[2].copy()
+            output_structure[2].append("vis")
+        elif isinstance(input_structure[2], int):
+            output_structure[2] += 1
+        else:
+            raise Exception("Cannot explain the invisibility reset transform "
+                            "for this type of input!")
+        return output_structure

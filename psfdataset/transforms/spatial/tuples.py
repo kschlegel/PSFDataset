@@ -52,3 +52,16 @@ class Tuples:
             Description of the transformation
         """
         return {"(SP)Tup": self._tuple_size}
+
+    def explain(self, input_structure):
+        """
+        Expected input structure: [time, landmarks, coords]
+        """
+        output_structure = [
+            input_structure[0],
+            [
+                ",".join(tup)
+                for tup in combinations(input_structure[1], self._tuple_size)
+            ], input_structure[2]
+        ]
+        return output_structure

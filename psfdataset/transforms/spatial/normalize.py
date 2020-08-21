@@ -86,6 +86,9 @@ class Normalize:
             desc["(s)Normalize/shift"] = self._shift
         return desc
 
+    def explain(self, input_structure):
+        return input_structure
+
 
 class NormalizeWithoutConfidence(Normalize):
     """

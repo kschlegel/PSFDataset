@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, Union, TYPE_CHECKING
+from typing import Tuple, Dict, Union, List, TYPE_CHECKING
 
 try:
     from typing import Protocol  # type: ignore
@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
 KeypointLabelPair = Tuple[np.ndarray, int]
 DescriptionDict = Dict[str, Union[str, int, float, bool]]
+StructureElement = Union[List[str], int, str]
+StructureDescription = List[StructureElement]
 
 PSFDatasetObject = Union["PSFDataset", "PSFZippedDataset"]
 
@@ -22,4 +24,8 @@ class KeypointTransformation(Protocol):
         ...
 
     def get_description(self) -> DescriptionDict:
+        ...
+
+    def explain(self,
+                input_structure: StructureDescription) -> StructureDescription:
         ...

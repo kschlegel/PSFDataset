@@ -75,6 +75,9 @@ class RandomSubset:
             desc["(s)rnd/seed"] = self._seed
         return desc
 
+    def explain(self, input_structure):
+        return input_structure
+
 
 class FirstN:
     """
@@ -115,6 +118,9 @@ class FirstN:
         """
         return {"(s)FirstN": self._n}
 
+    def explain(self, input_structure):
+        return input_structure
+
 
 class SubSample:
     """
@@ -152,3 +158,6 @@ class SubSample:
             Description of the transformation
         """
         return {"(s)subsample": self._step_size}
+
+    def explain(self, input_structure):
+        return input_structure

@@ -93,3 +93,23 @@ class DyadicPathSignatures:
             "(t)DySig/siglvl": self._signature_level,
             "(t)DySig/overlap": self._overlapping
         }
+
+    def explain(self, input_structure):
+        """
+        Expected input structure: [elements, time, D]
+        """
+        output_structure = [input_structure[0], [], input_structure[2]]
+        for dyadic_level in range(self._dyadic_levels + 1):
+            if self._overlapping:
+                num_pieces = 2**(dyadic_level + 1) - 1
+            else:
+                num_pieces = 2**dyadic_level
+            output_structure[1].extend([
+                "lvl" + str(dyadic_level) + "p" + str(i)
+                for i in range(num_pieces)
+            ])
+        if isinstance(input_structure[2], list):
+            output_structure[2] = len(input_structure[2])
+        output_structure[2] = tosig.sigdim(output_structure[2],
+                                           self._signature_level)
+        return output_structure

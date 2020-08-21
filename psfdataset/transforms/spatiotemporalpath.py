@@ -59,3 +59,21 @@ class SpatioTemporalPath:
             Description of the transformation
         """
         return {"SpatioTemporalPath/disintegrate": self._disintegrate}
+
+    def explain(self, input_structure):
+        if input_structure[0] != "time":
+            raise Exception("SpatioTemporal transformation expects a path with"
+                            "time in the first diomension")
+        if self._disintegrate:
+            output_structure = [input_structure[2], input_structure[0], 1]
+            if isinstance(input_structure[2], int):
+                output_structure[0] = list(range(input_structure[2]))
+            output_structure[0] = [
+                lm + " " + str(c) for lm in input_structure[1]
+                for c in output_structure[0]
+            ]
+        else:
+            output_structure = [
+                input_structure[1], input_structure[0], input_structure[2]
+            ]
+        return output_structure

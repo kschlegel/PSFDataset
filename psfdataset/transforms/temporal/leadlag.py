@@ -61,8 +61,24 @@ class LeadLagTransformation:
         """
         return {"(t)LLT": self._delay}
 
+    def explain(self, input_structure):
+        """
+        Expected input structure: [elements, time, D]
+        """
+        output_structure = [input_structure[0], input_structure[1], []]
+        if isinstance(input_structure[2], list):
+            for i in range(self._delay):
+                output_structure[2].extend(
+                    [c + "_d" + str(i + 1) for c in input_structure[2]])
+        elif isinstance(input_structure[2], int):
+            output_structure[2] = input_structure[2] * (self._delay + 1)
+        else:
+            raise Exception("Cannot explain the multi delayed transform for "
+                            "this type of input!")
+        return output_structure
 
-class MultiDelayedTransformation:
+
+class MultiDelayedTransformation(LeadLagTransformation):
     """
     Compute the multi-delayed transformation of a path.
 
