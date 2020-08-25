@@ -1,4 +1,5 @@
 from typing import List
+import os
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -265,3 +266,26 @@ class ExplainPSF:
                              yticklabels=self._classes)
             ax.set_title(self._input_elements[i])
         return fig
+
+    def save_all_classes(self, mat, folder):
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+        if not os.path.exists(os.path.join(folder, "classes")):
+            os.mkdir(os.path.join(folder, "classes"))
+        for i in trange(len(self._classes), desc="Class views"):
+            fig = self.action_class(mat, i)
+            plt.savefig(
+                os.path.join(folder, "classes", self._classes[i] + ".png"))
+            plt.close(fig)
+
+    def save_all_input_elements(self, mat, folder):
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+        if not os.path.exists(os.path.join(folder, "elements")):
+            os.mkdir(os.path.join(folder, "elements"))
+        for i in trange(len(self._input_elements), desc="Input element views"):
+            fig = self.input_element(mat, i)
+            plt.savefig(
+                os.path.join(folder, "elements",
+                             self._input_elements[i] + ".png"))
+            plt.close(fig)

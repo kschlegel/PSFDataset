@@ -23,7 +23,7 @@ class TestDyadicSignature:
         sig = DyadicPathSignatures(dyadic_levels=dy_lvl,
                                    signature_level=sig_lvl)
         # expected 1 element, 1 full piece, sigdim(2D, lvl2)
-        expected = np.array([[[1.0, 6.0, 6.0, 18.0, 18.0, 18.0, 18.0]]])
+        expected = np.array([[[6.0, 6.0, 18.0, 18.0, 18.0, 18.0]]])
         output = sig(test_input)
         np.testing.assert_array_equal(output, expected)
 
@@ -31,7 +31,8 @@ class TestDyadicSignature:
         dy_lvl = 1
         sig_lvl = 3
         sig = DyadicPathSignatures(dyadic_levels=dy_lvl,
-                                   signature_level=sig_lvl)
+                                   signature_level=sig_lvl,
+                                   drop_zeroth_term=False)
         # expected 1 element, 1 full piece+2 halfs, sigdim(2D, lvl2)
         expected = [None] * 4
         # signature of full piece
@@ -66,7 +67,8 @@ class TestDyadicSignature:
         # (full interval + 3 halfs: start, middle, end)
         sig = DyadicPathSignatures(dyadic_levels=dy_lvl,
                                    signature_level=sig_lvl,
-                                   overlapping=True)
+                                   overlapping=True,
+                                   drop_zeroth_term=False)
         # expected 1 element, 1 full piece+3 halfs, sigdim(2D, lvl2)
         expected_stack = np.stack(expected, axis=0)
         expected_stack = expected_stack.reshape((1, ) + expected_stack.shape)

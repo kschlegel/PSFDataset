@@ -67,9 +67,9 @@ class LeadLagTransformation:
         """
         output_structure = [input_structure[0], input_structure[1], []]
         if isinstance(input_structure[2], list):
-            for i in range(self._delay):
+            for i in range(self._delay + 1):
                 output_structure[2].extend(
-                    [c + "_d" + str(i + 1) for c in input_structure[2]])
+                    [c + "_d" + str(i) for c in input_structure[2]])
         elif isinstance(input_structure[2], int):
             output_structure[2] = input_structure[2] * (self._delay + 1)
         else:

@@ -32,7 +32,8 @@ class DyadicPathSignatures:
     def __init__(self,
                  dyadic_levels: int,
                  signature_level: int = 2,
-                 overlapping: bool = False) -> None:
+                 overlapping: bool = False,
+                 drop_zeroth_term: bool = True) -> None:
         """
         Parameters
         ----------
@@ -43,10 +44,14 @@ class DyadicPathSignatures:
             level of signatures to be computed
         overlapping: bool, optional (default is False)
             Whether to take the dyadic intervals half overlapping each other
+        drop_zeroth_term : bool, optional (default is True)
+            whether or not to drop the zeroth term of the signature (which is
+            always equal to 1)
         """
         self._dyadic_levels = dyadic_levels
         self._signature_level = signature_level
         self._overlapping = overlapping
+        self._drop_zeroth_term = drop_zeroth_term
 
     def __call__(self, sample: np.ndarray) -> np.ndarray:
         dyadic_pieces: List[List[np.ndarray]] = [
@@ -71,12 +76,11 @@ class DyadicPathSignatures:
                     end_frame = start_frame + frames_per_piece
                     start_frame = int(start_frame)
                     end_frame = int(end_frame)
-                    dyadic_pieces[i] += [
-                        tosig.stream2sig(
-                            sample[i][start_frame:end_frame].reshape(
-                                end_frame - start_frame,
-                                -1).astype(np.float64), self._signature_level)
-                    ]
+                    signature = tosig.stream2sig(
+                        sample[i][start_frame:end_frame].reshape(
+                            end_frame - start_frame, -1).astype(np.float64),
+                        self._signature_level)
+                    dyadic_pieces[i].append(signature[self._drop_zeroth_term:])
         return np.array(dyadic_pieces)
 
     def get_description(self) -> DescriptionDict:
@@ -91,7 +95,8 @@ class DyadicPathSignatures:
         return {
             "(t)DySig/dylvl": self._dyadic_levels,
             "(t)DySig/siglvl": self._signature_level,
-            "(t)DySig/overlap": self._overlapping
+            "(t)DySig/overlap": self._overlapping,
+            "(t)DySig/drop_zeroth": self._drop_zeroth_term
         }
 
     def explain(self, input_structure):
@@ -112,4 +117,6 @@ class DyadicPathSignatures:
             output_structure[2] = len(input_structure[2])
         output_structure[2] = tosig.sigdim(output_structure[2],
                                            self._signature_level)
+        if self._drop_zeroth_term:
+            output_structure[2] -= 1
         return output_structure
