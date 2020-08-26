@@ -289,3 +289,95 @@ class ExplainPSF:
                 os.path.join(folder, "elements",
                              self._input_elements[i] + ".png"))
             plt.close(fig)
+
+    def input_element_vs_class(self, mat, input_element, action_class):
+        fig = plt.figure(figsize=(20, 30))
+        fig.suptitle(self._input_elements[input_element] + " - " +
+                     self._classes[action_class],
+                     fontsize=16)
+        bar_cnt = 0
+        mat_max = np.amax(mat)
+        mat_min = np.amin(mat)
+
+        featureset_pos_neg = (
+            self._featureset_avg["pos"][:, self._feature_block *
+                                        input_element:self._feature_block *
+                                        (input_element + 1)] -
+            self._featureset_avg["neg"][:, self._feature_block *
+                                        input_element:self._feature_block *
+                                        (input_element + 1)])
+
+        with tqdm(total=8, desc="Rendering views") as pbar:
+            ax = plt.subplot(4, 2, 1)
+            ax = sns.heatmap(mat[action_class].reshape(
+                len(self._input_elements), self._feature_block),
+                             vmin=mat_min,
+                             vmax=mat_max,
+                             center=0,
+                             yticklabels=self._input_elements)
+            ax.set_title("Linear map - " + self._classes[action_class])
+            pbar.update(bar_cnt)
+            bar_cnt += 1
+
+            ax = plt.subplot(4, 2, 2)
+            ax = sns.heatmap(
+                mat[:, self._feature_block *
+                    input_element:self._feature_block * (input_element + 1)],
+                vmin=mat_min,
+                vmax=mat_max,
+                center=0,
+                yticklabels=self._classes)
+            ax.set_title("Linear map - " + self._input_elements[input_element])
+            pbar.update(bar_cnt)
+            bar_cnt += 1
+
+            ax = plt.subplot(4, 2, 3)
+            ax = sns.heatmap(np.multiply(
+                mat[action_class].reshape(len(self._input_elements),
+                                          self._feature_block),
+                self._featureset_avg["pos"][action_class].reshape(
+                    len(self._input_elements), self._feature_block) -
+                self._featureset_avg["neg"][action_class].reshape(
+                    len(self._input_elements), self._feature_block)),
+                             center=0,
+                             yticklabels=self._input_elements)
+            ax.set_title("Mat x Feature vector - " +
+                         self._classes[action_class])
+            pbar.update(bar_cnt)
+            bar_cnt += 1
+
+            ax = plt.subplot(4, 2, 4)
+            ax = sns.heatmap(np.multiply(
+                mat[:, self._feature_block *
+                    input_element:self._feature_block * (input_element + 1)],
+                featureset_pos_neg),
+                             center=0,
+                             yticklabels=self._classes)
+            ax.set_title("Mat x Feature vector - " +
+                         self._input_elements[input_element])
+            pbar.update(bar_cnt)
+            bar_cnt += 1
+
+            for pos, mode in ((7, "abs"), (6, "pos"), (8, "neg")):
+                ax = plt.subplot(4, 2, pos)
+                ax = sns.heatmap(self._featureset_avg[mode]
+                                 [:, self._feature_block *
+                                  input_element:self._feature_block *
+                                  (input_element + 1)],
+                                 vmin=0,
+                                 vmax=self._featureset_max[mode],
+                                 yticklabels=self._classes)
+                ax.set_title("Feature vector - " + mode)
+                pbar.update(bar_cnt)
+                bar_cnt += 1
+
+            ax = plt.subplot(4, 2, 5)
+            ax = sns.heatmap(featureset_pos_neg,
+                             vmin=-self._featureset_max["neg"],
+                             vmax=self._featureset_max["pos"],
+                             center=0,
+                             yticklabels=self._classes)
+            ax.set_title("Feature vector - pos-neg")
+            pbar.update(bar_cnt)
+
+        return fig
