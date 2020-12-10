@@ -54,7 +54,8 @@ class PSFDataset:
     def __init__(self,
                  transform: Optional[KeypointTransformation] = None,
                  flattened: bool = True,
-                 dtype: np.dtype = np.float64) -> None:
+                 dtype: np.dtype = np.float64,
+                 verbose: bool = False) -> None:
         """
         Parameters
         ----------
@@ -75,6 +76,7 @@ class PSFDataset:
         self._transform = transform
         self._flattened = flattened
         self._dtype = dtype
+        self._verbose = verbose
         # optionally the dataset can hold a training/testset split
         # using the PSFDataSubset module
         self._trainingset: Optional[PSFDataSubset] = None
@@ -167,7 +169,7 @@ class PSFDataset:
         data_iterator: iterable
             Iterable returning keypoint,label pairs of data.
         """
-        for element in tqdm(data_iterator):
+        for element in tqdm(data_iterator, disable=not self._verbose):
             self.add_element(element[0], element[1])
 
     def get_iterator(self) -> Iterator[KeypointLabelPair]:
@@ -208,7 +210,13 @@ class PSFDataset:
         numpy array
             Labels of the dataset
         """
-        return np.array(self._labels)
+        if len(self._labels) == 0:
+            return None
+        else:
+            kwargs = {}
+            if isinstance(self._labels[0], tuple):
+                kwargs["dtype"] = "object"
+            return np.array(self._labels, **kwargs)
 
     def get_description(self) -> DescriptionDict:
         """
