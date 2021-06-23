@@ -1,4 +1,4 @@
 numpy==1.18.5
 tqdm==4.46.1
-esig==0.7.1
+esig~=0.9.7
 typing_extensions==3.7.4.2;python_version<"3.8"

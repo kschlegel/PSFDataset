@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="psfdataset",
-    version="0.0.1",
+    version="0.0.2",
     author="Kevin Schlegel",
     author_email="kevinschlegel@cantab.net",
     description=
@@ -13,7 +13,7 @@ setup(
     install_requires=[
         'numpy>=1.18.5',
         'tqdm>=4.46.1',
-        'esig==0.7.1',
+        'esig~=0.9.7',
     ],
     extras_require={
         ':python_version < "3.8"': [
